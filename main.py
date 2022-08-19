@@ -38,7 +38,7 @@ def main():
             if event.type == pygame.KEYDOWN:
                 #firing bullets by pressing spacebar
                 if event.key == pygame.K_SPACE and len(bullet_list) < ship.MAX_BULLETS:
-                    bullet = Bullet(SCREEN, ship, game_settings)
+                    bullet = Bullet(SCREEN, ship)
                     bullet_list.append(bullet)
         
         #ivoking the method to handle the movement of ship
