@@ -1,12 +1,15 @@
-import pygame, sys, os
+import pygame, sys
 from alien import Alien
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
 
-def draw_window(background, screen, ship, aliens_matrix, bullet_list):
+def draw_window(
+    background, screen, ship, aliens_matrix, bullet_list, score, score_font, settings):
     screen.blit(background, (0, 0))
     ship.blitme()
+    score_text = score_font.render("Score :" + str(score), 1, settings.WHITE)
+    screen.blit(score_text, (10, 10))
     for alien_row in aliens_matrix:
         for alien in alien_row:
             alien.blitme()
@@ -66,12 +69,13 @@ def change_fleet_direction(aliens_matrix, direction):
             break
     return direction
 
-def handle_collision(bullet_list, aliens_matrix):
+def handle_collision(bullet_list, aliens_matrix, hit_event):
     for bullet in bullet_list:
         for alien_row in aliens_matrix:
             for alien in alien_row:
                 if alien.rect.colliderect(bullet):
                     alien_row.remove(alien)
+                    pygame.event.post(pygame.event.Event(hit_event))
                     bullet_list.remove(bullet)
 
 def main():
@@ -92,13 +96,17 @@ def main():
 
     #defining the fonts
     SCORE_FONT = pygame.font.SysFont('comicsans', 40)
-    WINNER_FONT = pygame.font.SysFont('comicsans', 100)
+    # WINNER_FONT = pygame.font.SysFont('comicsans', 100)
 
     #loading the sound files
     BULLET_HIT_SOUND = pygame.mixer.Sound(
         game_settings.BULLET_HIT_SOUND_PATH)
     BULLET_FIRE_SOUND = pygame.mixer.Sound(
         game_settings.BULLET_FIRE_SOUND_PATH)
+
+    ALIEN_HIT_EVENT = pygame.USEREVENT + 1
+    score_per_alien_hit = 10
+    score = 0
 
     #list of bullets on screen
     aliens_matrix = []
@@ -129,6 +137,11 @@ def main():
                 if event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
+            
+            if event.type == ALIEN_HIT_EVENT:
+                BULLET_HIT_SOUND.play()
+                score += score_per_alien_hit
+
         
         #invoking the method to handle the movement of ship
         ship.handle_movement()
@@ -140,7 +153,7 @@ def main():
                 bullet_list.remove(bullet)
         
         #handling alien-bullet collision
-        handle_collision(bullet_list, aliens_matrix)
+        handle_collision(bullet_list, aliens_matrix, ALIEN_HIT_EVENT)
 
         fleet_direction = change_fleet_direction(aliens_matrix, fleet_direction)
         for alien_row in aliens_matrix:
@@ -156,7 +169,8 @@ def main():
                     sys.exit()
         
         #drawing items to the screen
-        draw_window(BACKGROUND, SCREEN, ship, aliens_matrix, bullet_list)
+        draw_window(
+            BACKGROUND, SCREEN, ship, aliens_matrix, bullet_list, score, SCORE_FONT, game_settings)
 
         #ending the game when entir fleet of aliens are destroyed
         if aliens_destroyed(aliens_matrix):
