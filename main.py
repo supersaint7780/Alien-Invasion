@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, os
 from alien import Alien
 from settings import Settings
 from ship import Ship
@@ -18,6 +18,17 @@ def drop_alien_fleet(aliens):
     for alien_row in aliens:
         for alien in alien_row:
             alien.drop()
+
+def aliens_destroyed(aliens_matrix):
+    is_all_destroyed = False
+    for alien_row in aliens_matrix:
+        if len(alien_row) != 0:
+            is_all_destroyed = False
+            break
+        else:
+            is_all_destroyed = True
+
+    return is_all_destroyed            
 
 def create_alien_fleet(settings, screen, aliens_matrix):
     #create a full fleet of aliens
@@ -79,6 +90,16 @@ def main():
         pygame.image.load(game_settings.BACKGROUND_IMAGE_PATH),
         (game_settings.SCREEN_WIDTH, game_settings.SCREEN_HEIGHT))
 
+    #defining the fonts
+    SCORE_FONT = pygame.font.SysFont('comicsans', 40)
+    WINNER_FONT = pygame.font.SysFont('comicsans', 100)
+
+    #loading the sound files
+    BULLET_HIT_SOUND = pygame.mixer.Sound(
+        game_settings.BULLET_HIT_SOUND_PATH)
+    BULLET_FIRE_SOUND = pygame.mixer.Sound(
+        game_settings.BULLET_FIRE_SOUND_PATH)
+
     #list of bullets on screen
     aliens_matrix = []
     create_alien_fleet(game_settings, SCREEN, aliens_matrix)
@@ -102,6 +123,7 @@ def main():
                 if event.key == pygame.K_SPACE and len(bullet_list) < ship.MAX_BULLETS:
                     bullet = Bullet(SCREEN, ship)
                     bullet_list.append(bullet)
+                    BULLET_FIRE_SOUND.play()
                 
                 #keyboard shortcut to quit the game
                 if event.key == pygame.K_q:
@@ -132,9 +154,16 @@ def main():
                     pygame.time.delay(2000)
                     pygame.quit()
                     sys.exit()
-                
+        
         #drawing items to the screen
         draw_window(BACKGROUND, SCREEN, ship, aliens_matrix, bullet_list)
+
+        #ending the game when entir fleet of aliens are destroyed
+        if aliens_destroyed(aliens_matrix):
+            pygame.time.delay(2000)
+            pygame.quit()
+            sys.exit()
+                
 
 
 #running the game
