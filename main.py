@@ -169,7 +169,7 @@ def main():
                      (game_settings.SCREEN_WIDTH/2 - gameover_text.get_width()/2,
                       game_settings.SCREEN_HEIGHT/2 - gameover_text.get_height()/2 ))
                     pygame.display.update()
-                    pygame.time.delay(2000)
+                    pygame.time.delay(4000)
                     pygame.quit()
                     sys.exit()
         
