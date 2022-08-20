@@ -1,5 +1,34 @@
+import pygame, os
+
 class Alien():
-    def __init__(self):
-        self.ALIEN_WIDTH = 55
-        self.ALIEN_HEIGHT = 40
-        self.ALIEN_VELOCITY = 4
+    def __init__(self, screen):
+        self.screen = screen
+        self.WIDTH = 55
+        self.HEIGHT = 40
+        self.VELOCITY = 2
+        self.DROP_VELOCITY = 8
+        self.IMAGE_PATH = os.path.join('Assests', 'spaceship_yellow.png')
+        self.IMAGE = pygame.transform.scale(
+            pygame.image.load(self.IMAGE_PATH), (self.WIDTH, self.HEIGHT))
+        self.rect = self.IMAGE.get_rect()
+
+        self.rect.x = self.rect.width
+        self.rect.y = self.rect.height
+    
+    def blitme(self):
+        self.screen.blit(self.IMAGE, self.rect)
+
+    def update(self, direction):
+        self.rect.x += self.VELOCITY * direction
+    
+    def drop(self):
+        self.rect.y += self.DROP_VELOCITY
+    
+    def check_edge(self):
+        screen_rect = self.screen.get_rect()
+        if self.rect.right >= screen_rect.right:
+            return True
+        elif self.rect.left <= 0:
+            return True
+        else:
+            return False
