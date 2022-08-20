@@ -1,12 +1,12 @@
 import pygame, os
 
 class Alien():
-    def __init__(self, screen):
+    def __init__(self, screen, settings):
         self.screen = screen
+        self.settings = settings
         self.WIDTH = 55
         self.HEIGHT = 40
         self.VELOCITY = 2
-        self.DROP_VELOCITY = 8
         self.IMAGE_PATH = os.path.join('Assests', 'spaceship_yellow.png')
         self.IMAGE = pygame.transform.scale(
             pygame.image.load(self.IMAGE_PATH), (self.WIDTH, self.HEIGHT))
@@ -22,7 +22,7 @@ class Alien():
         self.rect.x += self.VELOCITY * direction
     
     def drop(self):
-        self.rect.y += self.DROP_VELOCITY
+        self.rect.y += self.settings.ALIEN_DROP_VELOCITY
     
     def check_edge(self):
         screen_rect = self.screen.get_rect()

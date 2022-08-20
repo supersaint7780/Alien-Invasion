@@ -35,7 +35,7 @@ def aliens_destroyed(aliens_matrix):
 
 def create_alien_fleet(settings, screen, aliens_matrix):
     #create a full fleet of aliens
-    alien = Alien(screen)
+    alien = Alien(screen, settings)
     alien_width = alien.rect.width
     alien_height = alien.rect.height
 
@@ -50,7 +50,7 @@ def create_alien_fleet(settings, screen, aliens_matrix):
     for row_number in range(number_rows):
         alien_row = []
         for alien_number in range(number_aliens_x):
-            alien = Alien(screen)
+            alien = Alien(screen, settings)
             alien.rect.x = alien_width + 2 * alien_number * alien_width
             alien.rect.y = alien_height + 2 * row_number * alien_height
             alien_row.append(alien)
@@ -96,7 +96,7 @@ def main():
 
     #defining the fonts
     SCORE_FONT = pygame.font.SysFont('comicsans', 40)
-    # WINNER_FONT = pygame.font.SysFont('comicsans', 100)
+    GAMEOVER_FONT = pygame.font.SysFont('comicsans', 100)
 
     #loading the sound files
     BULLET_HIT_SOUND = pygame.mixer.Sound(
@@ -164,6 +164,11 @@ def main():
         for alien_row in aliens_matrix:
             for alien in alien_row:
                 if alien.rect.colliderect(ship) or alien.rect.bottom >= game_settings.SCREEN_HEIGHT:
+                    gameover_text = GAMEOVER_FONT.render("Game Over", 1, game_settings.WHITE)
+                    SCREEN.blit(gameover_text,
+                     (game_settings.SCREEN_WIDTH/2 - gameover_text.get_width()/2,
+                      game_settings.SCREEN_HEIGHT/2 - gameover_text.get_height()/2 ))
+                    pygame.display.update()
                     pygame.time.delay(2000)
                     pygame.quit()
                     sys.exit()
@@ -174,11 +179,9 @@ def main():
 
         #ending the game when entir fleet of aliens are destroyed
         if aliens_destroyed(aliens_matrix):
-            pygame.time.delay(2000)
-            pygame.quit()
-            sys.exit()
-                
-
+            game_settings.ALIEN_DROP_VELOCITY += game_settings.ALIEN_DROP_VELOCITY_INCREASE
+            create_alien_fleet(game_settings, SCREEN, aliens_matrix)
+            
 
 #running the game
 main()

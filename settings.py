@@ -9,6 +9,8 @@ class Settings():
         self.SCREEN_HEIGHT = 600
         self.FPS = 60
         self.WHITE = (255, 255, 255)
+        self.ALIEN_DROP_VELOCITY = 10
+        self.ALIEN_DROP_VELOCITY_INCREASE = 5
         self.BACKGROUND_IMAGE_PATH = os.path.join('Assests', 'space.png')
         self.BULLET_FIRE_SOUND_PATH = os.path.join('Assests', 'Gun+Silencer.mp3')
         self.BULLET_HIT_SOUND_PATH = os.path.join('Assests', 'Grenade+1.mp3')
