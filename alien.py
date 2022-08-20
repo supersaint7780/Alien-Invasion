@@ -1,4 +1,4 @@
-class Aliens():
+class Alien():
     def __init__(self):
         self.ALIEN_WIDTH = 55
         self.ALIEN_HEIGHT = 40

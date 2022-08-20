@@ -40,13 +40,18 @@ def main():
                 if event.key == pygame.K_SPACE and len(bullet_list) < ship.MAX_BULLETS:
                     bullet = Bullet(SCREEN, ship)
                     bullet_list.append(bullet)
+                
+                #keyboard shortcut to quit the game
+                if event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
         
         #ivoking the method to handle the movement of ship
         ship.handle_movement()
         
         #handling the movement of bullets
         for bullet in bullet_list:
-            bullet.rect.y -= bullet.VELOCITY
+            bullet.update()
             if bullet.rect.y < 0:
                 bullet_list.remove(bullet)
 

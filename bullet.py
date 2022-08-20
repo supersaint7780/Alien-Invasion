@@ -12,3 +12,6 @@ class Bullet():
     
     def blitme(self):
         pygame.draw.rect(self.screen, self.COLOR ,self.rect)
+
+    def update(self):
+        self.rect.y -= self.VELOCITY
